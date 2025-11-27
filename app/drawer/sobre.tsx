@@ -31,7 +31,7 @@ export default function SobreScreen() {
       <View style={styles.header}>
         <View style={styles.logoContainer}>
           <View style={styles.logo}>
-             <Image source={require('./main/assets/logo_rym.png')} style={styles.logoContainer} />
+             <Image source={require('../assets/logo_rym.png')} style={styles.logoContainer} />
           </View>
         </View>
         <Text style={styles.appName}>Rescue Your Mind</Text>

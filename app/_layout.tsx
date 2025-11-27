@@ -1,65 +1,37 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Drawer } from 'expo-router/drawer';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
-export default function DrawerLayout() {
+export default function RootLayout() {
   return (
-    <Drawer>
-      <Drawer.Screen
-        name="main"
-        options={{
-          drawerLabel: 'Menu Principal',
-          title: 'Rescue Your Mind',
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
-          ),
+    <>
+      <StatusBar style="auto" />
+      <Stack
+        screenOptions={{
+          headerShown: false,
         }}
-      />
-
-      <Drawer.Screen
-        name="_setting"
-        options={{
-          drawerLabel: 'Ajustes',
-          title: 'Ajustes',
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      
-      <Drawer.Screen
-        name="sobre"
-        options={{
-          drawerLabel: 'Sobre o Aplicativo',
-          title: 'Sobre',
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="information-circle-outline" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Drawer.Screen
-        name="index"
-        options={{
-          drawerItemStyle: { display: 'none' },
-        }}
-      />
-
-       <Drawer.Screen
-        name="teste"
-        options={{
-          drawerItemStyle: { display: 'none' },
-        }}
-      />
-       <Drawer.Screen
-        name="RegistroUser"
-        options={{
-          drawerItemStyle: { display: 'none' },
-        }}
-      />
-
-
-    </Drawer>
-
-    
+      >
+        {/* Telas de Autenticação (fora do drawer) */}
+        <Stack.Screen 
+          name="index"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="RegistroUser"
+          options={{
+            headerShown: false,
+          }}
+        />
+        
+        {/* Drawer (sem parênteses) */}
+        <Stack.Screen 
+          name="drawer"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack>
+    </>
   );
 }

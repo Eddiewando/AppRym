@@ -1,15 +1,13 @@
-
-import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Linking } from 'react-native';
-
+import { Dimensions, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
-
 export default function HomeScreen() {
+  const router = useRouter();
+  
   const [weekMood] = useState([
     { day: 'Seg', mood: 4, emoji: '😊' },
     { day: 'Ter', mood: 3, emoji: '😌' },
@@ -20,8 +18,6 @@ export default function HomeScreen() {
     { day: 'Dom', mood: 4, emoji: '😊' },
   ]);
 
-  const router = useRouter(); 
-
   const motivationalQuotes = [
     "Cada dia é uma nova oportunidade para cuidar de si mesmo 🌱",
     "Você está fazendo o seu melhor, e isso é suficiente 💙",
@@ -31,8 +27,7 @@ export default function HomeScreen() {
 
   const [currentQuote] = useState(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
 
-
-  const getMoodColor = (mood) => {
+  const getMoodColor = (mood: number) => {
     const colors = {
       5: '#A8E6CF',
       4: '#B3E5FC',
@@ -47,11 +42,12 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-    
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>Olá! Usuário 👋</Text>
-          <Text style={styles.date}>{new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
+          <Text style={styles.date}>
+            {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </Text>
         </View>
         <TouchableOpacity style={styles.notificationBtn}>
           <Ionicons name="notifications-outline" size={24} color="#4A90A4" />
@@ -63,7 +59,6 @@ export default function HomeScreen() {
         <Text style={styles.motivationText}>{currentQuote}</Text>
       </View>
 
-
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Como você está se sentindo hoje?</Text>
         <View style={styles.moodQuickSelect}>
@@ -74,7 +69,10 @@ export default function HomeScreen() {
             { emoji: '😔', label: 'Triste', value: 2 },
             { emoji: '😢', label: 'Mal', value: 1 },
           ].map((mood, index) => (
-            <TouchableOpacity key={index} style={styles.moodBtn}>
+            <TouchableOpacity 
+              key={index} 
+              style={styles.moodBtn}
+          >
               <Text style={styles.moodEmoji}>{mood.emoji}</Text>
               <Text style={styles.moodLabel}>{mood.label}</Text>
             </TouchableOpacity>
@@ -110,47 +108,46 @@ export default function HomeScreen() {
         </View>
       </View>
 
-       <View style={styles.section}>
-    <Text style={styles.sectionTitle}>Recursos para você</Text>
-    <View style={styles.quickActions}>
-      <TouchableOpacity 
-        style={[styles.actionCard, { backgroundColor: '#E8F5E9' }]}
-        onPress={() => router.push('/main/respiracao')}
-      >
-        <Ionicons name="leaf-outline" size={28} color="#66BB6A" />
-        <Text style={styles.actionTitle}>Respirar</Text>
-        <Text style={styles.actionSubtitle}>5 min</Text>
-      </TouchableOpacity>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Recursos para você</Text>
+        <View style={styles.quickActions}>
+          <TouchableOpacity 
+            style={[styles.actionCard, { backgroundColor: '#E8F5E9' }]}
+             onPress={() => router.push('/drawer/(tabs)/respiracao')}
+          >
+            <Ionicons name="leaf-outline" size={28} color="#66BB6A" />
+            <Text style={styles.actionTitle}>Respirar</Text>
+            <Text style={styles.actionSubtitle}>5 min</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={[styles.actionCard, { backgroundColor: '#E3F2FD' }]}
-        onPress={() => router.push('/main/activities')}
-      >
-        <Ionicons name="fitness-outline" size={28} color="#42A5F5" />
-        <Text style={styles.actionTitle}>Atividades</Text>
-        <Text style={styles.actionSubtitle}>Bem-estar</Text>
-      </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.actionCard, { backgroundColor: '#E3F2FD' }]}
+            onPress={() => router.push('/drawer/(tabs)/activities')}
+          >
+            <Ionicons name="fitness-outline" size={28} color="#42A5F5" />
+            <Text style={styles.actionTitle}>Atividades</Text>
+            <Text style={styles.actionSubtitle}>Bem-estar</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={[styles.actionCard, { backgroundColor: '#F3E5F5' }]}
-        onPress={() => router.push('/main/diario')}
-      >
-        <Ionicons name="book-outline" size={28} color="#AB47BC" />
-        <Text style={styles.actionTitle}>Diário</Text>
-        <Text style={styles.actionSubtitle}>Escrever</Text>
-      </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.actionCard, { backgroundColor: '#F3E5F5' }]}
+            onPress={() => router.push('/drawer/(tabs)/diario')}
+          >
+            <Ionicons name="book-outline" size={28} color="#AB47BC" />
+            <Text style={styles.actionTitle}>Diário</Text>
+            <Text style={styles.actionSubtitle}>Escrever</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={[styles.actionCard, { backgroundColor: '#FFF3E0' }]}
-        onPress={() => Linking.openURL('tel:188')}
-      >
-        <Ionicons name="call-outline" size={28} color="#FFA726" />
-        <Text style={styles.actionTitle}>Ajuda</Text>
-        <Text style={styles.actionSubtitle}>CVV 188</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-}
+          <TouchableOpacity 
+            style={[styles.actionCard, { backgroundColor: '#FFF3E0' }]}
+            onPress={() => Linking.openURL('tel:188')}
+          >
+            <Ionicons name="call-outline" size={28} color="#FFA726" />
+            <Text style={styles.actionTitle}>Ajuda</Text>
+            <Text style={styles.actionSubtitle}>CVV 188</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>

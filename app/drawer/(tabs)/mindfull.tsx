@@ -30,12 +30,13 @@ export default function MindfullScreen() {
         <Text style={styles.subtitle}>Práticas de autocuidado e bem-estar</Text>
       </View>
 
-      
       <View style={styles.cardsContainer}>
         
+        {/* CARD DE RESPIRAÇÃO */}
         <TouchableOpacity 
           style={[styles.mainCard, { backgroundColor: '#E8F5E9' }]}
-          onPress={() => router.push('/main/respiracao')}
+          // CORREÇÃO AQUI: Caminho atualizado para a pasta (tabs)
+          onPress={() => router.push('/drawer/(tabs)/respiracao')}
           activeOpacity={0.8}
         >
           <View style={styles.cardHeader}>
@@ -60,10 +61,11 @@ export default function MindfullScreen() {
           </View>
         </TouchableOpacity>
 
-        
+        {/* CARD DE MEDITAÇÃO */}
         <TouchableOpacity 
           style={[styles.mainCard, { backgroundColor: '#E3F2FD' }]}
-          onPress={() => router.push('/main/meditacao')}
+          // CORREÇÃO AQUI: Caminho atualizado para a pasta (tabs)
+          onPress={() => router.push('/drawer/(tabs)/meditacao')}
           activeOpacity={0.8}
         >
           <View style={styles.cardHeader}>
@@ -88,7 +90,6 @@ export default function MindfullScreen() {
           </View>
         </TouchableOpacity>
       </View>
-
       
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Por que praticar mindfulness?</Text>
@@ -103,7 +104,6 @@ export default function MindfullScreen() {
           ))}
         </View>
       </View>
-
       
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Dicas para começar</Text>
@@ -118,7 +118,6 @@ export default function MindfullScreen() {
           ))}
         </View>
       </View>
-
       
       <View style={styles.quoteContainer}>
         <Ionicons name="chatbox-ellipses-outline" size={24} color="#4A90A4" />

@@ -1,25 +1,33 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 
 export default function SettingScreen() {
+  const router = useRouter();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Sair da Conta',
-      'Deseja realmente sair?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Sair', style: 'destructive', onPress: () => {
-          Alert.alert('Logout', 'Você saiu da conta com sucesso!');
-        }}
-      ]
-    );
-  };
+const handleLogout = async () => {
+  Alert.alert(
+    'Sair da Conta',
+    'Deseja realmente sair?',
+    [
+      { text: 'Cancelar', style: 'cancel' },
+      { 
+        text: 'Sair', 
+        style: 'destructive', 
+        onPress: async () => {
+          await AsyncStorage.removeItem('userToken');
+          router.replace('/');
+        }
+      }
+    ]
+  );
+};
 
   const handleDeleteAccount = () => {
     Alert.alert(
@@ -27,9 +35,23 @@ export default function SettingScreen() {
       'Esta ação é irreversível. Todos os seus dados serão permanentemente apagados.',
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Excluir', style: 'destructive', onPress: () => {
-          Alert.alert('Conta Excluída', 'Sua conta foi excluída.');
-        }}
+        { 
+          text: 'Excluir', 
+          style: 'destructive', 
+          onPress: () => {
+            // Aqui você faria a exclusão real da conta
+            Alert.alert(
+              'Conta Excluída', 
+              'Sua conta foi excluída.',
+              [
+                {
+                  text: 'OK',
+                  onPress: () => router.replace('/')
+                }
+              ]
+            );
+          }
+        }
       ]
     );
   };
@@ -38,9 +60,36 @@ export default function SettingScreen() {
     Alert.alert('Exportar Dados', 'Seus dados foram exportados com sucesso em formato PDF!');
   };
 
+  const handleEditProfile = () => {
+    Alert.alert('Editar Perfil', 'Funcionalidade em desenvolvimento');
+  };
+
+  const handleChangePassword = () => {
+    Alert.alert('Alterar Senha', 'Funcionalidade em desenvolvimento');
+  };
+
+  const handleHelpCenter = () => {
+    Alert.alert('Central de Ajuda', 'Abrindo FAQ e tutoriais...');
+  };
+
+  const handleContactUs = () => {
+    Alert.alert('Fale Conosco', 'Abrindo formulário de contato...');
+  };
+
+  const handleRateApp = () => {
+    Alert.alert('Avaliar App', 'Abrindo loja de aplicativos...');
+  };
+
+  const handleTerms = () => {
+    Alert.alert('Termos de Uso', 'Abrindo termos de uso...');
+  };
+
+  const handlePrivacy = () => {
+    Alert.alert('Política de Privacidade', 'Abrindo política de privacidade...');
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-
       <View style={styles.profileSection}>
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
@@ -52,7 +101,7 @@ export default function SettingScreen() {
         </View>
         <Text style={styles.userName}>Usuário RYM</Text>
         <Text style={styles.userEmail}>usuario@email.com</Text>
-        <TouchableOpacity style={styles.editProfileBtn}>
+        <TouchableOpacity style={styles.editProfileBtn} onPress={handleEditProfile}>
           <Text style={styles.editProfileText}>Editar Perfil</Text>
         </TouchableOpacity>
       </View>
@@ -140,7 +189,7 @@ export default function SettingScreen() {
           />
         </View>
 
-        <TouchableOpacity style={styles.settingItem}>
+        <TouchableOpacity style={styles.settingItem} onPress={handleChangePassword}>
           <View style={styles.settingLeft}>
             <View style={[styles.iconCircle, { backgroundColor: '#E8F5E9' }]}>
               <Ionicons name="lock-closed-outline" size={20} color="#66BB6A" />
@@ -170,7 +219,7 @@ export default function SettingScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Suporte</Text>
         
-        <TouchableOpacity style={styles.settingItem}>
+        <TouchableOpacity style={styles.settingItem} onPress={handleHelpCenter}>
           <View style={styles.settingLeft}>
             <View style={[styles.iconCircle, { backgroundColor: '#E8F4F8' }]}>
               <Ionicons name="help-circle-outline" size={20} color="#4A90A4" />
@@ -183,7 +232,7 @@ export default function SettingScreen() {
           <Ionicons name="chevron-forward" size={20} color="#B0B0B0" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.settingItem}>
+        <TouchableOpacity style={styles.settingItem} onPress={handleContactUs}>
           <View style={styles.settingLeft}>
             <View style={[styles.iconCircle, { backgroundColor: '#FCE4EC' }]}>
               <Ionicons name="mail-outline" size={20} color="#EC407A" />
@@ -196,7 +245,7 @@ export default function SettingScreen() {
           <Ionicons name="chevron-forward" size={20} color="#B0B0B0" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.settingItem}>
+        <TouchableOpacity style={styles.settingItem} onPress={handleRateApp}>
           <View style={styles.settingLeft}>
             <View style={[styles.iconCircle, { backgroundColor: '#F3E5F5' }]}>
               <Ionicons name="star-outline" size={20} color="#9C27B0" />
@@ -211,7 +260,7 @@ export default function SettingScreen() {
       </View>
 
       <View style={styles.section}>
-        <TouchableOpacity style={styles.settingItem}>
+        <TouchableOpacity style={styles.settingItem} onPress={handleTerms}>
           <View style={styles.settingLeft}>
             <View style={[styles.iconCircle, { backgroundColor: '#E0F2F1' }]}>
               <Ionicons name="document-text-outline" size={20} color="#26A69A" />
@@ -223,7 +272,7 @@ export default function SettingScreen() {
           <Ionicons name="chevron-forward" size={20} color="#B0B0B0" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.settingItem}>
+        <TouchableOpacity style={styles.settingItem} onPress={handlePrivacy}>
           <View style={styles.settingLeft}>
             <View style={[styles.iconCircle, { backgroundColor: '#FFF3E0' }]}>
               <Ionicons name="shield-checkmark-outline" size={20} color="#FF9800" />
@@ -413,5 +462,4 @@ const styles = StyleSheet.create({
     color: '#FF6B6B',
     marginLeft: 8,
   },
-
 });

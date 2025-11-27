@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -30,7 +31,6 @@ export default function RegisterScreen() {
   };
 
   const handleRegister = async () => {
-    
     if (!nome.trim() || !email.trim() || !senha.trim() || !confirmarSenha.trim()) {
       Alert.alert('Atenção', 'Por favor, preencha todos os campos.');
       return;
@@ -65,8 +65,8 @@ export default function RegisterScreen() {
         'Sua conta foi criada com sucesso!',
         [
           {
-            text: 'Começar',
-            onPress: () => router.replace('index'),
+            text: 'Fazer Login',
+            onPress: () => router.replace('/'),
           }
         ]
       );
@@ -74,7 +74,7 @@ export default function RegisterScreen() {
   };
 
   const handleBack = () => {
-    router.back('index');
+    router.back('/');
   };
 
   return (
@@ -91,6 +91,7 @@ export default function RegisterScreen() {
           <TouchableOpacity 
             style={styles.backButton}
             onPress={handleBack}
+            disabled={loading}
           >
             <Ionicons name="arrow-back" size={24} color="#4A90A4" />
           </TouchableOpacity>
@@ -101,7 +102,6 @@ export default function RegisterScreen() {
         </View>
 
         <View style={styles.registerCard}>
-          
           <View style={styles.welcomeIconContainer}>
             <View style={styles.welcomeIcon}>
               <Ionicons name="person-add" size={40} color="#4A90A4" />
@@ -119,6 +119,7 @@ export default function RegisterScreen() {
                 value={nome}
                 onChangeText={setNome}
                 autoCapitalize="words"
+                editable={!loading}
               />
             </View>
           </View>
@@ -136,6 +137,7 @@ export default function RegisterScreen() {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+                editable={!loading}
               />
             </View>
           </View>
@@ -152,10 +154,12 @@ export default function RegisterScreen() {
                 onChangeText={setSenha}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
+                editable={!loading}
               />
               <TouchableOpacity 
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeButton}
+                disabled={loading}
               >
                 <Ionicons 
                   name={showPassword ? "eye-outline" : "eye-off-outline"} 
@@ -178,10 +182,12 @@ export default function RegisterScreen() {
                 onChangeText={setConfirmarSenha}
                 secureTextEntry={!showConfirmPassword}
                 autoCapitalize="none"
+                editable={!loading}
               />
               <TouchableOpacity 
                 onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                 style={styles.eyeButton}
+                disabled={loading}
               >
                 <Ionicons 
                   name={showConfirmPassword ? "eye-outline" : "eye-off-outline"} 
@@ -218,6 +224,7 @@ export default function RegisterScreen() {
             style={styles.checkboxContainer}
             onPress={() => setAceitouTermos(!aceitouTermos)}
             activeOpacity={0.7}
+            disabled={loading}
           >
             <View style={[styles.checkbox, aceitouTermos && styles.checkboxChecked]}>
               {aceitouTermos && (
@@ -238,7 +245,7 @@ export default function RegisterScreen() {
             disabled={loading}
           >
             {loading ? (
-              <Text style={styles.registerButtonText}>Criando conta...</Text>
+              <ActivityIndicator color="#FFFFFF" />
             ) : (
               <>
                 <Text style={styles.registerButtonText}>Criar Conta</Text>
@@ -254,20 +261,20 @@ export default function RegisterScreen() {
           </View>
 
           <View style={styles.socialButtons}>
-            <TouchableOpacity style={styles.socialButton}>
+            <TouchableOpacity style={styles.socialButton} disabled={loading}>
               <Ionicons name="logo-google" size={24} color="#DB4437" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton}>
+            <TouchableOpacity style={styles.socialButton} disabled={loading}>
               <Ionicons name="logo-apple" size={24} color="#000000" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton}>
+            <TouchableOpacity style={styles.socialButton} disabled={loading}>
               <Ionicons name="logo-facebook" size={24} color="#1877F2" />
             </TouchableOpacity>
           </View>
 
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Já tem uma conta? </Text>
-            <TouchableOpacity onPress={handleBack}>
+            <TouchableOpacity onPress={handleBack} disabled={loading}>
               <Text style={styles.loginLink}>Faça login</Text>
             </TouchableOpacity>
           </View>

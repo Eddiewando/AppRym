@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
@@ -14,12 +16,52 @@ import {
   View
 } from 'react-native';
 
-export default function LoginScreen() {
+export default function IndexScreen() {
+  // --- 1. TODOS OS HOOKS DEVEM FICAR AQUI NO TOPO ---
   const router = useRouter();
+  
+  // States
+  const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // UseEffect principal
+  useEffect(() => {
+    // Função temporária para limpar o login e testar do zero
+    const resetAndCheck = async () => {
+      try {
+        await AsyncStorage.clear(); // <--- LIMPA O CACHE AQUI
+        console.log('Cache limpo para teste');
+        checkAuth(); // Verifica auth (vai falhar e mostrar login)
+      } catch (e) {
+        console.error(e);
+        setIsLoading(false);
+      }
+    };
+
+    resetAndCheck();
+  }, []);
+
+  // --- 2. FUNÇÕES AUXILIARES ---
+  const checkAuth = async () => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      if (userToken) {
+        router.replace('/drawer/(tabs)');
+      }
+    } catch (error) {
+      console.log('Erro ao verificar autenticação:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
 
   const handleLogin = async () => {
     if (!email.trim() || !senha.trim()) {
@@ -27,11 +69,29 @@ export default function LoginScreen() {
       return;
     }
 
+    if (!validateEmail(email)) {
+      Alert.alert('Atenção', 'Por favor, insira um e-mail válido.');
+      return;
+    }
+
+    if (senha.length < 6) {
+      Alert.alert('Atenção', 'A senha deve ter pelo menos 6 caracteres.');
+      return;
+    }
+
     setLoading(true);
     
-    setTimeout(() => {
-      setLoading(false);
-      router.replace('/main');
+    setTimeout(async () => {
+      try {
+        await AsyncStorage.setItem('userToken', 'fake-token-123');
+        await AsyncStorage.setItem('userEmail', email);
+        
+        setLoading(false);
+        router.replace('/drawer/(tabs)');
+      } catch (error) {
+        setLoading(false);
+        Alert.alert('Erro', 'Erro ao fazer login. Tente novamente.');
+      }
     }, 1500);
   };
 
@@ -39,6 +99,18 @@ export default function LoginScreen() {
     router.push('/RegistroUser');
   };
 
+  // --- 3. RETORNOS CONDICIONAIS (SÓ PODEM VIR DEPOIS DOS HOOKS) ---
+  
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4A90A4" />
+        <Text style={styles.loadingText}>Carregando...</Text>
+      </View>
+    );
+  }
+
+  // --- 4. RENDERIZAÇÃO DA TELA ---
   return (
     <KeyboardAvoidingView 
       style={styles.container}
@@ -52,7 +124,7 @@ export default function LoginScreen() {
         <View style={styles.header}>
           <View style={styles.logoContainer}>
             <View style={styles.logoCircle}>
-            <Image source={require('./main/assets/logo_rym.png')} style={styles.logoContainer} />
+              <Image source={require('./assets/logo_rym.png')} style={styles.logoContainer} />
             </View>
           </View>
           <Text style={styles.appName}>Rescue Your Mind</Text>
@@ -76,6 +148,7 @@ export default function LoginScreen() {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+                editable={!loading}
               />
             </View>
           </View>
@@ -92,10 +165,12 @@ export default function LoginScreen() {
                 onChangeText={setSenha}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
+                editable={!loading}
               />
               <TouchableOpacity 
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeButton}
+                disabled={loading}
               >
                 <Ionicons 
                   name={showPassword ? "eye-outline" : "eye-off-outline"} 
@@ -116,7 +191,7 @@ export default function LoginScreen() {
             disabled={loading}
           >
             {loading ? (
-              <Text style={styles.loginButtonText}>Entrando...</Text>
+              <ActivityIndicator color="#FFFFFF" />
             ) : (
               <>
                 <Text style={styles.loginButtonText}>Entrar</Text>
@@ -167,6 +242,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F7F9FC',
   },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#F7F9FC',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#7F8C8D',
+  },
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 30,
@@ -178,15 +264,16 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     marginBottom: 20,
-    width:180,
-    height:180,
-    justifyContent:'center',
-    alignItems:'center',
-    shadowColor:'#4A90A4',
-    shadowOffset: {width:0, height: 4},
-    shadowRadius:10,
-    borderRadius:20,
-    shadowOpacity:0.8,
+    width: 120,
+    height: 120,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 60,
+    shadowColor: '#4A90A4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
   },
   logoCircle: {
     width: 100,

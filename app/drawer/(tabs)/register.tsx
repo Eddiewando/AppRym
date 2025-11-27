@@ -2,12 +2,26 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
+type MoodType = {
+  id: number;
+  emoji: string;
+  label: string;
+  color: string;
+};
+
+type TriggerType = {
+  id: number;
+  label: string;
+  icon: any;
+};
+
 export default function RegisterScreen() {
-  const [selectedMood, setSelectedMood] = useState(null);
+  const [selectedMood, setSelectedMood] = useState<MoodType | null>(null);
   const [intensity, setIntensity] = useState(3);
   const [note, setNote] = useState('');
-  const [selectedTriggers, setSelectedTriggers] = useState([]);
-  const moods = [
+  const [selectedTriggers, setSelectedTriggers] = useState<number[]>([]);
+
+  const moods: MoodType[] = [
     { id: 1, emoji: '😢', label: 'Muito triste', color: '#D1C4E9' },
     { id: 2, emoji: '😔', label: 'Triste', color: '#BBDEFB' },
     { id: 3, emoji: '😌', label: 'Neutro', color: '#E0E0E0' },
@@ -15,7 +29,7 @@ export default function RegisterScreen() {
     { id: 5, emoji: '😄', label: 'Muito feliz', color: '#A8E6CF' },
   ];
 
-  const triggers = [
+  const triggers: TriggerType[] = [
     { id: 1, label: 'Trabalho', icon: 'briefcase-outline' },
     { id: 2, label: 'Família', icon: 'people-outline' },
     { id: 3, label: 'Saúde', icon: 'fitness-outline' },
@@ -26,7 +40,7 @@ export default function RegisterScreen() {
     { id: 8, label: 'Exercício', icon: 'barbell-outline' },
   ];
 
-  const toggleTrigger = (triggerId) => {
+  const toggleTrigger = (triggerId: number) => {
     if (selectedTriggers.includes(triggerId)) {
       setSelectedTriggers(selectedTriggers.filter(id => id !== triggerId));
     } else {
@@ -40,21 +54,24 @@ export default function RegisterScreen() {
       return;
     }
 
+    // Aqui você salvaria no backend ou AsyncStorage
     Alert.alert(
       'Registro salvo! ✅', 
       'Seu humor foi registrado com sucesso.',
-      [{ text: 'OK', onPress: () => {
-        setSelectedMood(null);
-        setIntensity(3);
-        setNote('');
-        setSelectedTriggers([]);
-      }}]
+      [{ 
+        text: 'OK', 
+        onPress: () => {
+          setSelectedMood(null);
+          setIntensity(3);
+          setNote('');
+          setSelectedTriggers([]);
+        }
+      }]
     );
   };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-    
       <View style={styles.header}>
         <Text style={styles.title}>Como você está?</Text>
         <Text style={styles.subtitle}>Registre seu momento atual</Text>
@@ -101,7 +118,12 @@ export default function RegisterScreen() {
                 ]}
                 onPress={() => setIntensity(level)}
               >
-                <Text style={styles.intensityNumber}>{level}</Text>
+                <Text style={[
+                  styles.intensityNumber,
+                  level <= intensity && styles.intensityNumberActive
+                ]}>
+                  {level}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -273,6 +295,9 @@ const styles = StyleSheet.create({
   intensityNumber: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#7F8C8D',
+  },
+  intensityNumberActive: {
     color: '#FFFFFF',
   },
   triggersContainer: {
